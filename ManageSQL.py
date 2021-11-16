@@ -8,12 +8,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
+print(os.getenv('GATE_USER'))
 #Add the credentials to your database here
 mydb = mysql.connector.connect(
-    user = os.getenv("GATE_USER"),
-    password = os.getenv("GATE_PASSWORD"),
-    host = os.getenv("GATE_HOST"),
+    user = os.getenv('GATE_USER'),
+    password = os.getenv('GATE_PASSWORD'),
+    host = os.getenv('GATE_HOST'),
     database = "gate_crypto_data"
 )
 
@@ -24,6 +24,19 @@ def insertData(datetime, minimum, maximum, volume, percentChange):
     val = (datetime, minimum, maximum, volume, percentChange)
     mycursor.execute(sql, val)
     mydb.commit()
+
+def fetchPrices():
+    mycursor = mydb.cursor()
+    query = "SELECT * FROM SHIB_data"
+    mycursor.execute(query)
+    data = mycursor.fetchall()
+    # for (min, max, timestamp) in mycursor:
+    #     print(min)
+    #     data.append(min, max, timestamp)
+    return data
+
+def closeConnection():
+    mydb.close()
 
 
 
