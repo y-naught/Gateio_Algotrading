@@ -3,14 +3,18 @@
 
 import mysql.connector
 import keys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 #Add the credentials to your database here
 mydb = mysql.connector.connect(
-    user = "DATABASE_USERNAME",
-    password = "USER_PASSWORD",
-    host = "IP_ADDRESS_OF_DATABASE",
-    database = "DATABASE_NAME"
+    user = os.getenv("GATE_USER"),
+    password = os.getenv("GATE_PASSWORD"),
+    host = os.getenv("GATE_HOST"),
+    database = "gate_crypto_data"
 )
 
 
