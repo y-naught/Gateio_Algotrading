@@ -4,6 +4,7 @@
 import mysql.connector
 import keys
 import os
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -25,6 +26,7 @@ def insertData(datetime, minimum, maximum, volume, percentChange):
     mycursor.execute(sql, val)
     mydb.commit()
 
+# fetch all the info from the database
 def fetchPrices():
     mycursor = mydb.cursor()
     query = "SELECT * FROM SHIB_data"
@@ -34,6 +36,19 @@ def fetchPrices():
     #     print(min)
     #     data.append(min, max, timestamp)
     return data
+
+# within a provided time window
+def fetchPrices(startDateTime, endDateTime):
+    mycursor = mydb.cursor()
+    query = (
+        "SELECT * FROM SHIB_data " 
+        "WHERE timestamp BETWEEN %s AND %s"
+    )
+    val = (startDateTime, endDateTime)
+    mycursor.execute(query, val)
+    data = mycursor.fetchall()
+    return data
+
 
 def closeConnection():
     mydb.close()
