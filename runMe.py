@@ -7,19 +7,16 @@ from RetrieveDataAPI import retrieveData
 from ManageSQL import insertData
 
 
-
-
-
 def main():
     print("Algotrading System initializing...")
 
     lastTime = time.time()
-    targetGap = 15 #seconds
+    targetGap = 15 # seconds
 
     while True:
         currentTime = time.time()
         timeElapsed = currentTime - lastTime
-
+        
         if timeElapsed > targetGap:
             #makeAPI call
             apireturn = retrieveData('SHIB_USDT')
