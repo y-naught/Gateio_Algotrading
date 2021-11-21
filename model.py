@@ -6,6 +6,7 @@ import ExitHandler
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 
 def calcStartTime(interval):
     currentTime = time.time()
@@ -99,27 +100,40 @@ def runEMAModel(cashValue, roughSet, smoothSet, timeSet):
                 profitable = False
 
             #record teh transaction
-            transitions.append([difference, percentGain, profitable])
+            transitions.append([difference, percentGain, profitable, cashValue])
     
-    return [transitions, cashValue]
+    return transitions
 
 
 def main():
-    freshData = getData(60)
-    smoothedData = calcEMA(freshData[1], freshData[0], 25)
-    print(smoothedData[0])
-    roughData = calcEMA(freshData[1], freshData[0], 12)
-    print(roughData[0])
-    roughDataShortened = resizeArray([roughData[0], smoothedData[0]])
-    print(roughDataShortened)
-    shortenedTime = resizeArray([freshData[1], smoothedData[0]])
-    print(shortenedTime)
 
-    params = runEMAModel(250, smoothedData[0], roughDataShortened, shortenedTime)
+    freshData = getData(700)
+    results = []
 
-    print(params[0])
-    print(params[1])
+    for i in range(18, 31):
+        for j in reversed(range(3, i-1)):
+            smoothedData = calcEMA(freshData[1], freshData[0], i)
+            roughData = calcEMA(freshData[1], freshData[0], j)
+            roughDataShortened = resizeArray([roughData[0], smoothedData[0]])
+            shortenedTime = resizeArray([freshData[1], smoothedData[0]])
 
+            params = runEMAModel(250, smoothedData[0], roughDataShortened, shortenedTime)
+            
+            aggregatedParameters = [i, j, params[-1][3]]
+            results.append(aggregatedParameters)
+    
+    print(results)
+
+    
+
+    with open('output.csv', 'w', newline='') as csvfile:
+        thisWriter = csv.writer(csvfile, delimiter=',', quotechar='|',quoting=csv.QUOTE_MINIMAL)
+        for i in range(len(results)):
+            thisWriter.writerow(results[i])
+            
+
+    
+    
 
 
 
